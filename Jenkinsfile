@@ -48,8 +48,7 @@ pipeline {
                         RestartSec=1
                         User=root
                         WorkingDirectory=/root/${JOB_BASE_NAME}
-                        Environment=$(poetry env info --path)/bin/activate
-                        ExecStart=gunicorn main:app --host 0.0.0.0 --port 8000
+                        ExecStart=/bin/bash -c 'source $(poetry env info --path)/bin/activate && exec gunicorn main:app --host 0.0.0.0 --port 8000
                         
                         [Install]
                         WantedBy=multi-user.target
