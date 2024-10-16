@@ -43,7 +43,7 @@ log "Arquivos copiados com sucesso."
 
 # Criando o serviço diretamente no container
 log "Criando servico no container"
-run_ssh_command "bash -s" <<EOF
+run_ssh_command "bash -s" <<'EOF'
 #!/bin/bash
 # Criação do serviço diretamente no container
 # Configuração do servico
@@ -51,6 +51,7 @@ cat > "${SERVICE_NAME}.service" <<SERVICE_EOF
 [Unit]
 Description=$SERVICE_NAME
 StartLimitIntervalSec=0
+
 [Service]
 Type=simple
 Environment="PATH=/root/.local/bin:/root/.pyenv/shims:/root/.pyenv/bin:/root/.pyenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
@@ -58,15 +59,16 @@ Restart=always
 RestartSec=1
 User=root
 WorkingDirectory=$REMOTE_PATH
-ExecStart=bash -c '
-    # Ativa e atualiza o venv
-    poetry install
-    source \$(poetry env info --path)/bin/activate
-    # Verifica se o arquivo .env existe, na pasta do projeto
-    # Atualiza as libs internas
-    # Executa o script principal
-    python ./app/main.py
-'
+ExecStart=/bin/bash -c 'poetry install && \
+    source $(poetry env info --path)/bin/activate && \
+    if [ ! -f ".env" ]; then \
+        echo "Arquivo .env nao encontrado, verifique se as variaveis de ambiente foram aplicadas." >&2; \
+        exit 1; \
+    fi && \
+    poetry update lib-sundown && \
+    poetry update lib-core && \
+    python ./app/main.py'
+
 [Install]
 WantedBy=multi-user.target
 SERVICE_EOF
