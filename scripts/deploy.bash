@@ -60,7 +60,8 @@ Restart=always
 RestartSec=1
 User=root
 WorkingDirectory=$REMOTE_PATH
-ExecStart=/root/.local/bin/poetry install && uvicorn main:app --host 0.0.0.0 ---port 8080
+ExecStart=/root/.local/bin/poetry install \
+    uvicorn main:app --host 0.0.0.0 ---port 8080
 [Install]
 WantedBy=multi-user.target
 SERVICE_EOF
