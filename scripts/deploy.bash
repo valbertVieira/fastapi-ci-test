@@ -43,9 +43,10 @@ log "Arquivos copiados com sucesso."
 
 # Criando o serviço diretamente no container
 log "Criando servico no container"
-run_ssh_command "bash -s" <<'EOF'
+run_ssh_command "bash -s" <<EOF
 #!/bin/bash
 # Criação do serviço diretamente no container
+
 # Configuração do servico
 cat > "${SERVICE_NAME}.service" <<SERVICE_EOF
 [Unit]
@@ -54,12 +55,12 @@ StartLimitIntervalSec=0
 
 [Service]
 Type=simple
-Environment="PATH=/root/.local/bin:/root/.pyenv/shims:/root/.pyenv/bin:/root/.pyenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+Environment="PATH=/root/.local/bin:/root/.pyenv/shims:/root/.pyenv/bin:/root/.pyenv/bin:/root/.pyenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 Restart=always
 RestartSec=1
 User=root
 WorkingDirectory=$REMOTE_PATH
-ExecStart=printenv
+ExecStart=bash ./scripts/prod_start.bash
 [Install]
 WantedBy=multi-user.target
 SERVICE_EOF
@@ -79,12 +80,13 @@ else
 fi
 
 cp "${SERVICE_NAME}.service" /etc/systemd/system/
-
 # Habilitar e iniciar o serviço
 systemctl enable $SERVICE_NAME.service
 systemctl restart $SERVICE_NAME.service
+
 echo "[Service] Servico '$SERVICE_NAME' foi ativado e reiniciado com sucesso."
 EOF
 
 log "Servico criado e iniciado com sucesso no container."
+
 log "Processo de deployment concluido"
