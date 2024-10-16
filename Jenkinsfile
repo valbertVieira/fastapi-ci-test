@@ -4,7 +4,7 @@ pipeline {
     stages {        
         stage('Deploy to Server') {
             steps {
-                sh """
+                sh '''
                     ssh root@${REMOTE_CONTAINER_IP} '
                     # Cria diretório da aplicação se não existir
                     mkdir -p ${JOB_BASE_NAME}
@@ -24,7 +24,7 @@ pipeline {
                     # Desativa o ambiente virtual
                     deactivate
                     '
-                """
+                '''
             }
         }
         
