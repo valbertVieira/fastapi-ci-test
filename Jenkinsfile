@@ -40,7 +40,7 @@ After=network.target
 [Service]
 User=ubuntu
 Group=ubuntu
-WorkingDirectory=${JOB_BASE_NAME}
+WorkingDirectory="/${JOB_BASE_NAME}"
 Environment="PATH=/venv/bin"
 ExecStart=/venv/bin/uvicorn main:app --host 0.0.0.0 --port 8000
 Restart=always
