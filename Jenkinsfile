@@ -13,7 +13,8 @@ pipeline {
                     # Copia os arquivos da aplicação
                     scp -r ./* root@${REMOTE_CONTAINER_IP}:${JOB_BASE_NAME}/
                     
-                    ssh root@${REMOTE_CONTAINER_IP} '        
+                    ssh root@${REMOTE_CONTAINER_IP} '
+                    
                     cd ${JOB_BASE_NAME} 
                     
                     poetry install
