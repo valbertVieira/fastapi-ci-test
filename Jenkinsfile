@@ -15,7 +15,10 @@ pipeline {
                     
                     ssh root@${REMOTE_CONTAINER_IP} '
                     # Cria e ativa o ambiente virtual
+                    
                     cd ${JOB_BASE_NAME} && python3 -m venv venv
+                    poetry export --without-hashes --format=requirements.txt > requirements.txt
+                    
                     source venv/bin/activate
                     
                     # Instala as dependências
