@@ -1,71 +1,32 @@
 pipeline {
     agent any
     
-    stages {        
-        stage('Deploy to Server') {
+    stages {
+        stage('Generate Environment File') {
             steps {
-               script {
-                    // Função para executar comandos SSH
-                    def sshCommand = { cmd ->
-                        sh "ssh root@${REMOTE_CONTAINER_IP} '${cmd}'"
-                    }
-                    
-                    // Função para copiar arquivos via SCP
-                    def scpFiles = { from, to ->
-                        sh "scp -r ${from} root@${REMOTE_CONTAINER_IP}:${to}"
-                    }
-                    
-                    // Cria diretório da aplicação
-                    sshCommand "mkdir -p ${JOB_BASE_NAME}"
-                    
-                    // Copia os arquivos da aplicação
-                    scpFiles "./*", "${JOB_BASE_NAME}/"
-                    
-                    // Instala e configura a aplicação
-                    sshCommand """
-                        cd ${JOB_BASE_NAME}
-                        poetry install
-                        source \$(poetry env info --path)/bin/activate
-                    """
-                }
+                // Adicione permissões ao script se necessário
+                sh 'chmod +x ./scripts/build_env.bash'
+                // Executa o script que gera o .env com as variáveis de ambiente
+                sh 'bash ./scripts/build_env.bash'
+                // Opcional: Verifica o conteúdo do .env para garantir que foi gerado corretamente
+                sh 'cat .env'
             }
         }
         
-        stage('Create Service') {
+        stage('Deploy to Remote Container') {
             steps {
-                 sh """
-                    ssh root@${REMOTE_CONTAINER_IP} '
-                    echo "Criando serviço no container"
-                    cat > /etc/systemd/system/${JOB_BASE_NAME}.service <<EOF
-                        [Unit]
-                        Description=${JOB_BASE_NAME}
-                        StartLimitIntervalSec=0
-                        
-                        [Service]
-                        Type=simple
-                        Environment="PATH=/root/.local/bin:/root/.pyenv/shims:/root/.pyenv/bin:/root/.pyenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-                        Restart=always
-                        RestartSec=1
-                        User=root
-                        WorkingDirectory=/root/${JOB_BASE_NAME}
-                        ExecStart=/bin/bash -c 'source $(poetry env info --path)/bin/activate && exec gunicorn main:app --host 0.0.0.0 --port 8000
-                        
-                        [Install]
-                        WantedBy=multi-user.target
-                    EOF
-
-                    systemctl daemon-reload
-                    systemctl enable ${JOB_BASE_NAME}.service
-                    systemctl restart ${JOB_BASE_NAME}.service
-                    '
-                """
+                // Adicione permissões ao script de deploy se necessário
+                sh 'chmod +x ./scripts/deploy.bash'
+                // Executa o script de deploy que copia os arquivos para o container remoto e inicia o serviço
+                sh 'bash ./scripts/deploy.bash ${REMOTE_CONTAINER_IP}'
             }
         }
     }
     
     post {
         always {
-            cleanWs()
+            // Limpeza ou ações pós-build, se necessário
+            echo "Pipeline concluído, executando ações pós-build."
         }
     }
 }
