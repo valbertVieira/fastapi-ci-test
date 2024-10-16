@@ -7,8 +7,8 @@ pipeline {
                 sh """
                     ssh root@${REMOTE_CONTAINER_IP} '
                     # Cria diretório da aplicação se não existir
-                    mkdir -p ${JOB_BASE_NAME}  '
-                    
+                    mkdir -p ${JOB_BASE_NAME}
+                    '
                     
                     # Copia os arquivos da aplicação
                     scp -r ./* root@${REMOTE_CONTAINER_IP}:${JOB_BASE_NAME}/
