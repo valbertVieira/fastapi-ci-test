@@ -15,14 +15,13 @@ pipeline {
                     
                     ssh root@${REMOTE_CONTAINER_IP} '
                     # Cria e ativa o ambiente virtual
-                    cd ${JOB_BASE_NAME} && python3 -m venv venv
-                    source venv/bin/activate
+                    cd ${JOB_BASE_NAME} && poetry install
+
                     
                     # Instala as dependências
-                    pip install -r ${JOB_BASE_NAME}/requirements.txt
+                    source $(poetry env info --path)/bin/activate
                     
                     # Desativa o ambiente virtual
-                    deactivate
                     '
                 """
             }
@@ -44,9 +43,8 @@ Environment="PATH=/root/.local/bin:/root/.pyenv/shims:/root/.pyenv/bin:/root/.py
 Restart=always
 RestartSec=1
 User=root
-WorkingDirectory=/${JOB_BASE_NAME}
-Environment="PATH=/${JOB_BASE_NAME}/venv/bin"
-ExecStart=/${JOB_BASE_NAME}/venv/bin/uvicorn main:app --host 0.0.0.0 --port 8000
+WorkingDirectory=/root/${JOB_BASE_NAME}
+ExecStart=gunicorn main:app --host 0.0.0.0 --port 8000
 
 [Install]
 WantedBy=multi-user.target
