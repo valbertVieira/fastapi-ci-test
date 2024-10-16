@@ -22,6 +22,7 @@ pipeline {
                     source $(poetry env info --path)/bin/activate
                     
                     # Desativa o ambiente virtual
+                    deactivate
                     '
                 """
             }
