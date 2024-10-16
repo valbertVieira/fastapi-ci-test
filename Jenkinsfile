@@ -49,7 +49,7 @@ RestartSec=1
 User=root
 WorkingDirectory=/${JOB_BASE_NAME}
 Environment="PATH=/${JOB_BASE_NAME}/venv/bin"
-ExecStart=/${JOB_BASE_NAME}/venv/bin/uvicorn main:app --host 0.0.0.0 --port 8000
+ExecStart=/${JOB_BASE_NAME}/venv/bin/gunicorn main:app --host 0.0.0.0 --port 8000
 
 [Install]
 WantedBy=multi-user.target
