@@ -61,7 +61,7 @@ RestartSec=1
 User=root
 WorkingDirectory=$REMOTE_PATH
 ExecStart=/bin/bash -c 'poetry install && \
-    source $(poetry env info --path)/bin/activate && gunicorn main:app --workers 1 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
+    source $(poetry env info --path)/bin/activate && gunicorn main:app --host 0.0.0.0 --port 8000
 [Install]
 WantedBy=multi-user.target
 SERVICE_EOF
