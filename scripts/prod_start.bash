@@ -4,5 +4,4 @@
 poetry install
 source $(poetry env info --path)/bin/activate
 
-# Executa o script principal
-python ./app/main.py
+gunicorn main:app --host 0.0.0.0 --port 8000
