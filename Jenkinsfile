@@ -15,7 +15,7 @@ pipeline {
                     
                     ssh root@${REMOTE_CONTAINER_IP} '
                     # Cria e ativa o ambiente virtual
-                    cd ${JOB_BASE_NAME}
+                    cd \${JOB_BASE_NAME}
                     #install deps
                     poetry install        
                     # Instala as dependências
