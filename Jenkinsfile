@@ -22,7 +22,7 @@ pipeline {
                     source venv/bin/activate
                     
                     # Instala as dependências
-                    pip install -r ${JOB_BASE_NAME}/requirements.txt
+                    pip install -r requirements.txt
                     
                     # Desativa o ambiente virtual
                     deactivate
