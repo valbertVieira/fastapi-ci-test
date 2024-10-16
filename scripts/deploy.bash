@@ -59,16 +59,7 @@ Restart=always
 RestartSec=1
 User=root
 WorkingDirectory=$REMOTE_PATH
-ExecStart=/bin/bash -c 'poetry install && \
-    source $(poetry env info --path)/bin/activate && \
-    if [ ! -f ".env" ]; then \
-        echo "Arquivo .env nao encontrado, verifique se as variaveis de ambiente foram aplicadas." >&2; \
-        exit 1; \
-    fi && \
-    poetry update lib-sundown && \
-    poetry update lib-core && \
-    python ./app/main.py'
-
+ExecStart=printenv
 [Install]
 WantedBy=multi-user.target
 SERVICE_EOF
