@@ -60,7 +60,7 @@ Restart=always
 RestartSec=1
 User=root
 WorkingDirectory=$REMOTE_PATH
-ExecStart=source $(poetry env info --path)/bin/activate --version
+ExecStart=/root/.local/bin/poetry --version
 [Install]
 WantedBy=multi-user.target
 SERVICE_EOF
