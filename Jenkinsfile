@@ -30,28 +30,31 @@ pipeline {
         
         stage('Create Service') {
             steps {
-                sh """
-                    ssh root@${REMOTE_CONTAINER_IP}'
-                    tee /etc/systemd/system/${JOB_BASE_NAME}.service << EOF
+                 sh """
+                    ssh root@${REMOTE_CONTAINER_IP} '
+                    echo "Criando serviço no container"
+                    cat > /etc/systemd/system/${JOB_BASE_NAME}.service <<EOF
 [Unit]
-Description=FastAPI application
-After=network.target
+Description=${JOB_BASE_NAME}
+StartLimitIntervalSec=0
 
 [Service]
-User=ubuntu
-Group=ubuntu
-WorkingDirectory="/${JOB_BASE_NAME}"
-Environment="PATH=/venv/bin"
-ExecStart=/venv/bin/uvicorn main:app --host 0.0.0.0 --port 8000
+Type=simple
+Environment="PATH=/root/.local/bin:/root/.pyenv/shims:/root/.pyenv/bin:/root/.pyenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 Restart=always
+RestartSec=1
+User=root
+WorkingDirectory=/${JOB_BASE_NAME}
+Environment="PATH=/${JOB_BASE_NAME}/venv/bin"
+ExecStart=/${JOB_BASE_NAME}/venv/bin/uvicorn main:app --host 0.0.0.0 --port 8000
 
 [Install]
 WantedBy=multi-user.target
 EOF
 
-                    sudo systemctl daemon-reload
-                    sudo systemctl enable ${JOB_BASE_NAME}.service
-                    sudo systemctl restart ${JOB_BASE_NAME}.service
+                    systemctl daemon-reload
+                    systemctl enable ${JOB_BASE_NAME}.service
+                    systemctl restart ${JOB_BASE_NAME}.service
                     '
                 """
             }
