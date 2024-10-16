@@ -14,13 +14,13 @@ pipeline {
                     scp -r ./* root@${REMOTE_CONTAINER_IP}:${JOB_BASE_NAME}/
                     
                     ssh root@${REMOTE_CONTAINER_IP} '
+                    # Cria e ativa o ambiente virtual
                     
-                    cd ${JOB_BASE_NAME} 
-                    
-                    poetry install
-                    
-                    source $(poetry env info --path)/bin/activate        
-                    '  
+                    cd ${JOB_BASE_NAME} && poetry install
+                   
+                    # Desativa o ambiente virtual
+                    source $(poetry env info --path)/bin/activate
+                    '
                 """
             }
         }
