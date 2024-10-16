@@ -60,7 +60,7 @@ Restart=always
 RestartSec=1
 User=root
 WorkingDirectory=$REMOTE_PATH
-ExecStart=poetry install && source $(poetry env info --path)/bin/activate && gunicorn main:app --host 0.0.0.0 --port 8000
+ExecStart=bash ./scripts/prod_start.bash 
 [Install]
 WantedBy=multi-user.target
 SERVICE_EOF
