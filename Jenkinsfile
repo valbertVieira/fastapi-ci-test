@@ -9,7 +9,7 @@ pipeline {
                 // Executa o script que gera o .env com as variáveis de ambiente
                 // sh 'bash ./scripts/build_env.bash'
                 // Opcional: Verifica o conteúdo do .env para garantir que foi gerado corretamente
-                // sh 'cat .env'
+                sh 'cat .env'
             }
         }
         
