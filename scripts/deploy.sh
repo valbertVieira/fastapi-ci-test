@@ -46,21 +46,27 @@ log "Criando servico no container"
 run_ssh_command "bash -s" <<EOF
 #!/bin/bash
 # Criação do serviço diretamente no container
-
 # Configuração do servico
 cat > "${SERVICE_NAME}.service" <<SERVICE_EOF
 [Unit]
 Description=$SERVICE_NAME
 StartLimitIntervalSec=0
-
 [Service]
 Type=simple
-Environment="PATH=/root/.local/bin:/root/.pyenv/shims:/root/.pyenv/bin:/root/.pyenv/bin:/root/.pyenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+Environment="PATH=/root/.local/bin:/root/.pyenv/shims:/root/.pyenv/bin:/root/.pyenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 Restart=always
 RestartSec=1
 User=root
 WorkingDirectory=$REMOTE_PATH
-ExecStart=bash ./scripts/prod_start.bash
+ExecStart=bash -c '
+    # Ativa e atualiza o venv
+    poetry install
+    source \$(poetry env info --path)/bin/activate
+    # Verifica se o arquivo .env existe, na pasta do projeto
+    # Atualiza as libs internas
+    # Executa o script principal
+    python ./app/main.py
+'
 [Install]
 WantedBy=multi-user.target
 SERVICE_EOF
@@ -80,13 +86,12 @@ else
 fi
 
 cp "${SERVICE_NAME}.service" /etc/systemd/system/
+
 # Habilitar e iniciar o serviço
 systemctl enable $SERVICE_NAME.service
 systemctl restart $SERVICE_NAME.service
-
 echo "[Service] Servico '$SERVICE_NAME' foi ativado e reiniciado com sucesso."
 EOF
 
 log "Servico criado e iniciado com sucesso no container."
-
 log "Processo de deployment concluido"
