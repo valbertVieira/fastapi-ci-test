@@ -60,7 +60,7 @@ Restart=always
 RestartSec=1
 User=root
 WorkingDirectory=$REMOTE_PATH
-ExecStartPre=/root/.local/bin/poetry install
+ExecStartPre=/bin/bash -c 'source /root/.bashrc && poetry --version'
 ExecStart=/root/.local/bin/poetry run uvicorn main:app --host 0.0.0.0 --port 8080
 [Install]
 WantedBy=multi-user.target
