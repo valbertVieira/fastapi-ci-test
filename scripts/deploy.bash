@@ -60,7 +60,7 @@ Restart=always
 RestartSec=1
 User=root
 WorkingDirectory=$REMOTE_PATH
-ExecStart=bash ./scripts/prod_start.bash 
+ExecStart=poetry --version
 [Install]
 WantedBy=multi-user.target
 SERVICE_EOF
