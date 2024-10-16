@@ -7,12 +7,12 @@ pipeline {
                script {
                     // Função para executar comandos SSH
                     def sshCommand = { cmd ->
-                        sh "ssh ${REMOTE_USER}@${REMOTE_HOST} '${cmd}'"
+                        sh "ssh root@${REMOTE_CONTAINER_IP} '${cmd}'"
                     }
                     
                     // Função para copiar arquivos via SCP
                     def scpFiles = { from, to ->
-                        sh "scp -r ${from} ${REMOTE_USER}@${REMOTE_HOST}:${to}"
+                        sh "scp -r ${from} root@${REMOTE_CONTAINER_IP}:${to}"
                     }
                     
                     // Cria diretório da aplicação
