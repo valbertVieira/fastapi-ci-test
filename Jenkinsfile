@@ -17,7 +17,7 @@ pipeline {
                     cd ${JOB_BASE_NAME}
                     poetry install
                     
-                    
+                    source $(poetry env info --path)/bin/activate        
                     '
                 """
             }
