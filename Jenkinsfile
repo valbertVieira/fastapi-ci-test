@@ -5,9 +5,9 @@ pipeline {
         stage('Generate Environment File') {
             steps {
                 // Adicione permissões ao script se necessário
-                // sh 'chmod +x ./scripts/build_env.bash'
+                sh 'chmod +x ./scripts/build_env.bash'
                 // Executa o script que gera o .env com as variáveis de ambiente
-                // sh 'bash ./scripts/build_env.bash'
+                sh 'bash ./scripts/build_env.bash'
                 // Opcional: Verifica o conteúdo do .env para garantir que foi gerado corretamente
                 sh 'printenv'
             }
