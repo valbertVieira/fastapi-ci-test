@@ -14,7 +14,7 @@ pipeline {
                     scp -r ./* root@${REMOTE_CONTAINER_IP}:${JOB_BASE_NAME}/
                     
                     ssh root@${REMOTE_CONTAINER_IP} '        
-                    cd ${JOB_BASE_NAME}
+                    cd ${JOB_BASE_NAME} &&
                     poetry install
                     
                     source $(poetry env info --path)/bin/activate        
