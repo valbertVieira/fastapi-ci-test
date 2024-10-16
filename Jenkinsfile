@@ -4,26 +4,24 @@ pipeline {
     stages {        
         stage('Deploy to Server') {
             steps {
-                sh '''
-                # Cria diretório da aplicação se não existir
-                ssh root@${REMOTE_CONTAINER_IP} "mkdir -p ${JOB_BASE_NAME}"
-                
-                # Copia os arquivos da aplicação
-                scp -r ./* root@${REMOTE_CONTAINER_IP}:${JOB_BASE_NAME}/
-                
-                ssh root@${REMOTE_CONTAINER_IP} << EOF
-                    cd ${JOB_BASE_NAME}
+                sh """
+                    ssh root@\${REMOTE_CONTAINER_IP} '
+                    # Cria diretório da aplicação se não existir
+                    mkdir -p \${JOB_BASE_NAME}
+                    '
                     
-                    # Cria e ativa o ambiente virtual
-                    poetry install        
+                    # Copia os arquivos da aplicação
+                    scp -r ./* root@\${REMOTE_CONTAINER_IP}:\${JOB_BASE_NAME}/
                     
-                    # Ativa o ambiente virtual
-                    source \$(poetry env info --path)/bin/activate
+                    ssh root@\${REMOTE_CONTAINER_IP} '
                     
-                    # Desativa o ambiente virtual
-                    deactivate
-                EOF
-            '''
+                    cd \${JOB_BASE_NAME} 
+                    
+                    poetry install
+                    
+                    source \$(poetry env info --path)/bin/activate        
+                    '  
+                """
             }
         }
         
