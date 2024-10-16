@@ -61,14 +61,7 @@ RestartSec=1
 User=root
 WorkingDirectory=$REMOTE_PATH
 ExecStart=/bin/bash -c 'poetry install && \
-    source $(poetry env info --path)/bin/activate && \
-    if [ ! -f ".env" ]; then \
-        echo "Arquivo .env nao encontrado, verifique se as variaveis de ambiente foram aplicadas." >&2; \
-        exit 1; \
-    fi && \
-    poetry update lib-sundown && \
-    poetry update lib-core && \
-    python ./app/main.py'
+    source $(poetry env info --path)/bin/activate && gunicorn main:app --workers 1 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
 [Install]
 WantedBy=multi-user.target
 SERVICE_EOF
