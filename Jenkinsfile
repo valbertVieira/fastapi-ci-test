@@ -23,7 +23,7 @@ pipeline {
         }
 
         
-        stage('Generate Environment File') {
+        stage('Generate env file') {
             steps {
                 // Adicione permissões ao script se necessário
                 sh 'chmod +x ./scripts/build_env.bash'
@@ -34,7 +34,7 @@ pipeline {
             }
         }
         
-        stage('Deploy to Remote Container') {
+        stage('Deploy') {
             steps {
                 // Adicione permissões ao script de deploy se necessário
                 sh 'chmod +x ./scripts/deploy.bash'
@@ -80,35 +80,10 @@ pipeline {
     }
     
     post {
-
         success {
             echo "Pipeline executado com sucesso!"
         }
        
-       failure {
-           
-            script {
-                def failedStage = currentBuild.getExecutionStage()
-                echo "${failedStage}"
-                
-                if (failedStage && failedStage.name == 'Check Health') {
-                    def lastSuccessfulCommit = env.GIT_PREVIOUS_SUCCESSFUL_COMMIT
-                    echo "${lastSuccessfulCommit}"
-                    if (lastSuccessfulCommit) {
-                        echo "Fazendo rollback para o commit da última build bem-sucedida: ${lastSuccessfulCommit}"
-                        
-                       build job: env.JOB_NAME, parameters: [
-                            string(name: 'COMMIT_HASH', value: lastSuccessfulCommit)
-                        ], wait: false
-                        
-                        echo "Rollback concluido, uma nova build comecara automaticamente."
-                        
-                    } else {
-                        echo "Não foi encontrada nenhuma build bem-sucedida anterior. Não é possível realizar o rollback."
-                    }
-                }
-            }
-        }
         always {
             // Limpeza ou ações pós-build, se necessário
             echo "Pipeline concluido, executando acoes pos-build."
