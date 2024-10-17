@@ -75,6 +75,8 @@ pipeline {
                     echo "commit ${lastSuccessfulBuild.description}"
 
 
+                     def lastSuccessfulCommit = lastSuccessfulBuild.description
+
                     
                     echo "Última versão estável: Build ${lastSuccessfulBuild.number}, Commit ${commitSHA}"
                     echo "Iniciando rollback para o commit ${commitSHA} da build ${lastSuccessfulBuild.number}"
@@ -82,7 +84,7 @@ pipeline {
                     // Executa o rollback
                     build job: currentBuild.projectName, parameters: [
                         string(name: 'REMOTE_CONTAINER_IP', value: env.REMOTE_CONTAINER_IP),
-                        string(name: 'ROLLBACK_COMMIT', value: lastSuccessfulBuild.description)
+                        string(name: 'ROLLBACK_COMMIT', value: lastSuccessfulCommit)
                     ], wait: false
                     
                     echo "Processo de rollback iniciado. Verifique a nova build para acompanhar o progresso."
