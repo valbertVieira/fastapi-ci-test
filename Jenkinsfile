@@ -11,7 +11,7 @@ pipeline {
                     checkout scm
                 }
             }
-    }
+    }}
     
     stages {
         stage('Generate Environment File') {
