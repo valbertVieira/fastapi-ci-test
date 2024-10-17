@@ -72,7 +72,7 @@ pipeline {
                 }
         
                 if (lastSuccessfulBuild) {
-                    def commitSHA = lastSuccessfulBuild.getEnvironment().get("GIT_COMMIT")
+                    def commitSHA = lastSuccessfulBuild.rawBuild.getEnvironment(listener).get('GIT_COMMIT')
                     echo "ultima versao estavel ${lastSuccessfulBuild} commit ${commitSHA}"
 
                     echo "Revertendo para o commit ${commitSHA} da build ${lastSuccessfulBuild.number}"
