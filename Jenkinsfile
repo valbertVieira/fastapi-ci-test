@@ -73,7 +73,7 @@ pipeline {
         
                 if (lastSuccessfulBuild) {
                     def commitSHA = sh(
-                        script: "git rev-parse ${lastSuccessfulBuild.number}^{commit}",
+                        script: "git rev-list -n 1 ${lastSuccessfulBuild.getEnvironment(listener).get('GIT_COMMIT')}",
                         returnStdout: true
                     ).trim()
                     
