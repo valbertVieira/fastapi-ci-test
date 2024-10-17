@@ -8,14 +8,16 @@ pipeline {
                 script {
                     // Recupera o SHA do commit da descrição da build anterior
                     // Atualiza o SHA do commit atual na descrição da build
-                    commitSha = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
-                    currentBuild.description = "${commitSha}"
+                    
                     
                     echo "Build iniciada para o commit: ${commitSha}"
                     def commitSha = currentBuild.description ?: 'main' // Se a descrição não tiver o SHA, usa a branch principal
                     
                     // Fazer o checkout do commit especificado na descrição da build anterior
                     checkout([$class: 'GitSCM', branches: [[name: commitSha]]])
+
+                    commitSha = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
+                    currentBuild.description = "${commitSha}"
                 }
             }
         }
