@@ -29,7 +29,7 @@ pipeline {
                 // Adicione uma checagem na URL da API para garantir que está online
                 script {
                     def apiStatus = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://${REMOTE_CONTAINER_IP}:5050", returnStdout: true).trim()
-                    if (apiStatus != '23') {
+                    if (apiStatus != '200') {
                         echo "Servico atualizado e funcionando. STATUS: ${apiStatus}"
                     } else {
                         error "Api sem resposta. STATUS: ${apiStatus}"
