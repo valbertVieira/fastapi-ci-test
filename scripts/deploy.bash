@@ -55,12 +55,12 @@ StartLimitIntervalSec=0
 
 [Service]
 Type=simple
-Environment="PATH=/root/.local/bin:/root/.pyenv/shims:/root/.pyenv/bin:/root/.pyenv/bin:/root/.pyenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+Environment="PATH=/root/.local/bin:/root/.pyenv/shims:/root/.pyenv/bin:/root/.pyenv/bin:/root/.pyenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/root/.local/bin/poetry"
 Restart=always
 RestartSec=1
 User=root
 WorkingDirectory=$REMOTE_PATH
-ExecStartPre=/root/.local/bin/poetry install
+ExecStartPre=poetry install
 ExecStart=/root/.local/bin/poetry run uvicorn main:app --host 0.0.0.0 --port ${API_PORT}  --workers 4
 [Install]
 WantedBy=multi-user.target
