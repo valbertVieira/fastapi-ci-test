@@ -21,6 +21,21 @@ pipeline {
                 sh 'bash ./scripts/deploy.bash ${REMOTE_CONTAINER_IP}'
             }
         }
+        stage('Check Health') {
+            steps {
+                // Adicione uma checagem na URL da API para garantir que está online
+                script {
+                    def apiStatus = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://${REMOTE_CONTAINER_IP}:${API_PORT}", returnStdout: true).trim()
+                    if (apiStatus != '200') {
+                        error "A API não está respondendo corretamente. Status: ${apiStatus}"
+                    } else {
+                        echo "A API está online e respondendo corretamente."
+                    }
+                }
+            }
+        }
+
+        
     }
     
     post {
