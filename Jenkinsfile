@@ -74,6 +74,8 @@ pipeline {
            
             script {
                 def failedStage = currentBuild.getExecutionStage()
+                echo "${failedStage}"
+                
                 if (failedStage && failedStage.name == 'Check Health') {
                     def lastSuccessfulCommit = env.GIT_PREVIOUS_SUCCESSFUL_COMMIT
                     echo "${lastSuccessfulCommit}"
