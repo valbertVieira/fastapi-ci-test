@@ -1,7 +1,7 @@
 pipeline {
     agent any
     parameters {
-        string(name: 'COMMIT_HASH', defaultValue: '', description: 'Tag da build para reconstruir (ex: jenkins-ci-tesste-11)')
+        string(name: 'COMMIT_HASH', defaultValue: '', description: 'Construir a partir de um commit específico')
     }
 
     stages {
