@@ -77,17 +77,12 @@ pipeline {
                 if (lastSuccessfulCommit) {
                     echo "Fazendo rollback para o commit da última build bem-sucedida: ${lastSuccessfulCommit}"
                     
-                    checkout([$class: 'GitSCM', 
-                              branches: [[name: "${lastSuccessfulCommit}"]],
-                              userRemoteConfigs: [[url: 'git@github.com:valbertVieira/fastapi-ci-test.git']]])
+                   build job: env.JOB_NAME, parameters: [
+                        string(name: 'COMMIT_HASH', value: lastSuccessfulCommit)
+                    ], wait: false
                     
                     echo "Rollback concluído. O código agora está no estado da última build bem-sucedida."
                     
-                    // Aqui você pode adicionar passos adicionais, como redeploy da aplicação
-                    // Por exemplo:
-                    // sh 'docker-compose up -d'
-                    // ou
-                    // sh './deploy.sh'
                 } else {
                     echo "Não foi encontrada nenhuma build bem-sucedida anterior. Não é possível realizar o rollback."
                 }
