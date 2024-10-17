@@ -54,7 +54,7 @@ pipeline {
                     if (apiStatus >= '200' && apiStatus <= '204') {
                         echo "Servico atualizado e funcionando. STATUS: ${apiStatus}"
                     } else {
-                        error "Api sem resposta. STATUS: ${apiStatus}"
+                        echo "Api sem resposta. STATUS: ${apiStatus}"
 
                         def lastSuccessfulCommit = env.GIT_PREVIOUS_SUCCESSFUL_COMMIT
                         if (lastSuccessfulCommit) {
