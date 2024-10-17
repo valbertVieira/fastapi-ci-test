@@ -1,9 +1,6 @@
 pipeline {
     agent any
 
-    parameters {
-        string(name: 'ROLLBACK_COMMIT', defaultValue: '', description: 'Commit SHA para rollback')
-    }
 
     stages {
         stage('Checkout') {
