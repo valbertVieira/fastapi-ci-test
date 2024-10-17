@@ -60,7 +60,7 @@ pipeline {
                         if (lastSuccessfulCommit) {
                             echo "Check Health falhou. Iniciando rollback para commit: ${lastSuccessfulCommit}"
                             build job: env.JOB_NAME, parameters: [
-                                string(name: 'COMMIT_HASH', value: lastSuccessfulCommit)
+                                string(name: 'COMMIT', value: lastSuccessfulCommit)
                             ], wait: false
                         } else {
                             echo "Commit bem sucedido nao encontrado, faca rollback manualmente passando o commit estavel na proxima build"
