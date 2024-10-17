@@ -81,7 +81,7 @@ pipeline {
                         string(name: 'COMMIT_HASH', value: lastSuccessfulCommit)
                     ], wait: false
                     
-                    echo "Rollback concluído. O código agora está no estado da última build bem-sucedida."
+                    echo "Rollback concluido, uma nova build comecara automaticamente."
                     
                 } else {
                     echo "Não foi encontrada nenhuma build bem-sucedida anterior. Não é possível realizar o rollback."
