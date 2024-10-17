@@ -72,7 +72,7 @@ pipeline {
         
                 if (lastSuccessfulBuild) {
                     echo "ultima build ok ${lastSuccessfulBuild.number}"
-                    echo "${lastSuccessfulBuild.rawBuild}"
+                    echo "commit ${lastSuccessfulBuild.description}"
                     node {
                         def buildData = lastSuccessfulBuild.rawBuild.actions.find { it instanceof hudson.plugins.git.util.BuildData }
                         if (buildData) {
