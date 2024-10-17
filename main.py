@@ -4,7 +4,7 @@ app = FastAPI()
 
 @app.get('/')
 async def read_results():
-    results = {"ola":"mundo"}
+    results = {"FOO":"BAR"}
     return results
 
 
