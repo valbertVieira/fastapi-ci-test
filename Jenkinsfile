@@ -1,7 +1,7 @@
 pipeline {
     agent any
     parameters {
-        string(name: 'BUILD_TAG', defaultValue: '', description: 'Tag da build para reconstruir (ex: jenkins-ci-tesste-11)')
+        string(name: 'COMMIT_HASH', defaultValue: '', description: 'Tag da build para reconstruir (ex: jenkins-ci-tesste-11)')
     }
 
     stages {
@@ -10,9 +10,9 @@ pipeline {
                 script {
                     sh 'printenv'
                     
-                    if (params.BUILD_TAG) {
+                    if (params.COMMIT_HASH) {
                         checkout([$class: 'GitSCM', 
-                                  branches: [[name: "${params.BUILD_TAG}"]],
+                                  branches: [[name: "${params.COMMIT_HASH}"]],
                                   userRemoteConfigs: [[url: '${GIT_URL}']]])
                     } else {
                         // Checkout padrão da branch principal se nenhuma tag for especificada
