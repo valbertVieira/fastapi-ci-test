@@ -13,7 +13,7 @@ pipeline {
                     if (params.COMMIT_HASH) {
                         checkout([$class: 'GitSCM', 
                                   branches: [[name: "${params.COMMIT_HASH}"]],
-                                  userRemoteConfigs: [[url: '${GIT_URL}']]])
+                                  userRemoteConfigs: [[url: "${GIT_URL}"]]])
                     } else {
                         // Checkout padrão da branch principal se nenhuma tag for especificada
                         checkout scm
