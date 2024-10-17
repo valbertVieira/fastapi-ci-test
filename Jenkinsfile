@@ -8,7 +8,7 @@ pipeline {
             steps {
                 script {
                     // Limpa o workspace antes de começar
-                    cleanWs()
+                    // cleanWs()
                 }
             } 
         }
