@@ -7,9 +7,6 @@ pipeline {
         stage('Preparing environment') {
             steps {
                 script {
-                    // Limpa o workspace antes de começar
-                    // cleanWs()
-                    sh 'ls'
                     def commitSha = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
                     currentBuild.description = "Commit: ${commitSha}"
                     echo "Build iniciada para o commit: ${commitSha}"
