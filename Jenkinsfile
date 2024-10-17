@@ -56,10 +56,18 @@ pipeline {
     }
     
     post {
+
+        success {
+            echo "Pipeline executado com sucesso!"
+        }
+        failure {
+            echo "Pipeline falhou. Verifique os logs para mais detalhes."
+        }
+        
         always {
             // Limpeza ou ações pós-build, se necessário
             echo "Pipeline concluído, executando ações pós-build."
-             cleanWs()
+            cleanWs()
         }
     }
 }
