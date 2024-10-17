@@ -1,9 +1,26 @@
 pipeline {
     agent any
-
+    parameters {
+        string(name: 'BUILD_TAG', defaultValue: '', description: 'Tag da build para reconstruir (ex: jenkins-ci-tesste-11)')
+    }
 
     stages {
-       
+        stage('Checkout') {
+            steps {
+                script {
+                    if (params.BUILD_TAG) {
+                        checkout([$class: 'GitSCM', 
+                                  branches: [[name: "refs/tags/${params.BUILD_TAG}"]],
+                                  userRemoteConfigs: [[url: 'git@github.com:valbertVieira/fastapi-ci-test.git']]])
+                    } else {
+                        // Checkout padrão da branch principal se nenhuma tag for especificada
+                        checkout scm
+                    }
+                }
+            }
+        }
+
+        
         stage('Generate Environment File') {
             steps {
                 // Adicione permissões ao script se necessário
