@@ -55,6 +55,19 @@ pipeline {
                         echo "Servico atualizado e funcionando. STATUS: ${apiStatus}"
                     } else {
                         error "Api sem resposta. STATUS: ${apiStatus}"
+
+                        def lastSuccessfulCommit = env.GIT_PREVIOUS_SUCCESSFUL_COMMIT
+                        if (lastSuccessfulCommit) {
+                            echo "Check Health falhou. Iniciando rollback para commit: ${lastSuccessfulCommit}"
+                            build job: env.JOB_NAME, parameters: [
+                                string(name: 'COMMIT_HASH', value: lastSuccessfulCommit)
+                            ], wait: false
+                        } else {
+                            echo "Commit bem sucedido nao encontrado, faca rollback manualmente passando o commit estavel na proxima build"
+                        }
+
+
+                        
                     }
                 }
         }
