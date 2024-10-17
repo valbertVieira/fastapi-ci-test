@@ -68,10 +68,12 @@ pipeline {
                 def lastSuccessfulBuild = currentBuild.previousBuild
                 while (lastSuccessfulBuild != null && lastSuccessfulBuild.result != 'SUCCESS') {
                     lastSuccessfulBuild = lastSuccessfulBuild.previousBuild
-                    echo "Procurando última build bem-sucedida..."
                 }
         
                 if (lastSuccessfulBuild) {
+
+                    echo "ultima build ok ${lastSuccessfulBuild} ${lastSuccessfulBuild.getEnvironment().get('GIT_COMMIT')}"
+
                     def commitSHA = lastSuccessfulBuild.getActions(hudson.plugins.git.util.BuildData.class)[0].getLastBuiltRevision().getSha1String()
                     
                     echo "Última versão estável: Build ${lastSuccessfulBuild.number}, Commit ${commitSHA}"
