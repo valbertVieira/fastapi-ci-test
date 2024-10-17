@@ -36,7 +36,7 @@ pipeline {
         stage('Check Health') {
             steps {
                 // Aguarda alguns segundos para o serviço iniciar
-                // sh 'sleep 10'
+                sh 'sleep 10'
         
                 // Adicione uma checagem na URL da API para garantir que está online
                 script {
