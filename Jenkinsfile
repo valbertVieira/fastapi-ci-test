@@ -8,6 +8,8 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
+                    sh 'printenv'
+                    
                     if (params.BUILD_TAG) {
                         checkout([$class: 'GitSCM', 
                                   branches: [[name: "${params.BUILD_TAG}"]],
