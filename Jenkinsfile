@@ -71,20 +71,24 @@ pipeline {
         }
        
        failure {
+           
             script {
-                def lastSuccessfulCommit = env.GIT_PREVIOUS_SUCCESSFUL_COMMIT
-                echo "${lastSuccessfulCommit}"
-                if (lastSuccessfulCommit) {
-                    echo "Fazendo rollback para o commit da última build bem-sucedida: ${lastSuccessfulCommit}"
-                    
-                   build job: env.JOB_NAME, parameters: [
-                        string(name: 'COMMIT_HASH', value: lastSuccessfulCommit)
-                    ], wait: false
-                    
-                    echo "Rollback concluido, uma nova build comecara automaticamente."
-                    
-                } else {
-                    echo "Não foi encontrada nenhuma build bem-sucedida anterior. Não é possível realizar o rollback."
+                def failedStage = currentBuild.getExecutionStage()
+                if (failedStage && failedStage.name == 'Check Health') {
+                    def lastSuccessfulCommit = env.GIT_PREVIOUS_SUCCESSFUL_COMMIT
+                    echo "${lastSuccessfulCommit}"
+                    if (lastSuccessfulCommit) {
+                        echo "Fazendo rollback para o commit da última build bem-sucedida: ${lastSuccessfulCommit}"
+                        
+                       build job: env.JOB_NAME, parameters: [
+                            string(name: 'COMMIT_HASH', value: lastSuccessfulCommit)
+                        ], wait: false
+                        
+                        echo "Rollback concluido, uma nova build comecara automaticamente."
+                        
+                    } else {
+                        echo "Não foi encontrada nenhuma build bem-sucedida anterior. Não é possível realizar o rollback."
+                    }
                 }
             }
         }
