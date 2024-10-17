@@ -8,7 +8,7 @@ pipeline {
             steps {
                 script {
                     def commitSha = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
-                    currentBuild.description = "Commit: ${commitSha}"
+                    currentBuild.description = "${commitSha}"
                     echo "Build iniciada para o commit: ${commitSha}"
                 }
             } 
@@ -73,15 +73,8 @@ pipeline {
                 if (lastSuccessfulBuild) {
                     echo "ultima build ok ${lastSuccessfulBuild.number}"
                     echo "commit ${lastSuccessfulBuild.description}"
-                    node {
-                        def buildData = lastSuccessfulBuild.rawBuild.actions.find { it instanceof hudson.plugins.git.util.BuildData }
-                        if (buildData) {
-                            lastSuccessfulCommit = buildData.lastBuiltRevision.SHA1
-                            echo "${buildData} ok"
-                        }
-                    }
 
-                    def commitSHA = lastSuccessfulBuild.getActions(hudson.plugins.git.util.BuildData.class)[0].getLastBuiltRevision().getSha1String()
+
                     
                     echo "Última versão estável: Build ${lastSuccessfulBuild.number}, Commit ${commitSHA}"
                     echo "Iniciando rollback para o commit ${commitSHA} da build ${lastSuccessfulBuild.number}"
@@ -89,7 +82,7 @@ pipeline {
                     // Executa o rollback
                     build job: currentBuild.projectName, parameters: [
                         string(name: 'REMOTE_CONTAINER_IP', value: env.REMOTE_CONTAINER_IP),
-                        string(name: 'ROLLBACK_COMMIT', value: commitSHA)
+                        string(name: 'ROLLBACK_COMMIT', value: lastSuccessfulBuild.description)
                     ], wait: false
                     
                     echo "Processo de rollback iniciado. Verifique a nova build para acompanhar o progresso."
