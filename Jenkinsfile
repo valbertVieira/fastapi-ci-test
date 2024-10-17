@@ -60,26 +60,28 @@ pipeline {
         success {
             echo "Pipeline executado com sucesso!"
         }
-       failure {
-            script {
-                echo "Pipeline falhou. Iniciando rollback..."
-                def previousSuccessfulBuild = currentBuild.previousSuccessfulBuild
-                if (previousSuccessfulBuild) {
-                    echo "Revertendo para o commit da build ${previousSuccessfulBuild.number}"
-                    
-                    // Obtenha o SHA do commit específico da build anterior
-                    def commitSHA = previousSuccessfulBuild.getEnvironment().get("GIT_COMMIT")
-                    
-                    // Faça o checkout do commit e execute o deploy de rollback
-                    sh "git checkout ${commitSHA}"
-                    // Executa o deploy no commit específico
-                    sh 'bash ./scripts/deploy.bash ${REMOTE_CONTAINER_IP}'
-                    
-                } else {
-                    echo "Não foi possível encontrar uma build anterior bem-sucedida para rollback."
-            }
-    }
-}
+       
+        failure {
+                script {
+                    echo "Pipeline falhou. Iniciando rollback..."
+                    def previousSuccessfulBuild = currentBuild.previousSuccessfulBuild
+                    if (previousSuccessfulBuild) {
+                        // Recupera o SHA do commit da última build bem-sucedida
+                        def commitSHA = previousSuccessfulBuild.getEnvironment().get("GIT_COMMIT")
+                        echo "Revertendo para o commit ${commitSHA} da build ${previousSuccessfulBuild.number}"
+            
+                        // Chama a própria job com os parâmetros para o rollback
+                        build job: currentBuild.projectName, parameters: [
+                            string(name: 'REMOTE_CONTAINER_IP', value: REMOTE_CONTAINER_IP),
+                            string(name: 'ROLLBACK_COMMIT', value: commitSHA)
+                        ]
+                    } else {
+                        echo "Não foi possível encontrar uma build anterior bem-sucedida para rollback."
+                    }
+                }
+        }
+
+
         
         always {
             // Limpeza ou ações pós-build, se necessário
