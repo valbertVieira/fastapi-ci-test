@@ -61,7 +61,19 @@ pipeline {
             echo "Pipeline executado com sucesso!"
         }
         failure {
-            error "Pipeline falhou. Verifique os logs para mais detalhes."
+            script {
+                echo "Pipeline falhou. Iniciando rollback..."
+                def previousSuccessfulBuild = currentBuild.previousSuccessfulBuild
+                if (previousSuccessfulBuild) {
+                    echo "Revertendo para a build ${previousSuccessfulBuild.number}"
+                    build job: currentBuild.projectName, parameters: [
+                        string(name: 'REMOTE_CONTAINER_IP', value: REMOTE_CONTAINER_IP),
+                        string(name: 'ROLLBACK_TO', value: previousSuccessfulBuild.number.toString())
+                    ]
+                } else {
+                    echo "Não foi possível encontrar uma build anterior bem-sucedida para rollback."
+                }
+            }
         }
         
         always {
