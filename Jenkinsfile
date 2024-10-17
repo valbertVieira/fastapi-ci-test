@@ -9,12 +9,21 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
+                    // Fazer o checkout do commit especificado ou o mais recente
+                    if (params.COMMIT_ID) {
+                        checkout([$class: 'GitSCM', branches: [[name: params.COMMIT_ID]]])
+                    } else {
+                        checkout scm
+                    }
+                    
+                    // Obter o SHA do commit verificado
                     def commitSha = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
+                    
+                    // Atualizar a descrição da build com o SHA do commit
                     currentBuild.description = "${commitSha}"
                     echo "Build iniciada para o commit: ${commitSha}"
                 }
             }
-        }
 
         stage('Generate Environment File') {
             steps {
