@@ -1,7 +1,7 @@
 pipeline {
     agent any
     parameters {
-        string(name: 'COMMIT_HASH', defaultValue: '', description: 'Construir a partir de um commit específico')
+        string(name: 'COMMIT', defaultValue: '', description: 'Construir a partir de um commit especifico')
     }
 
     stages {
@@ -10,9 +10,9 @@ pipeline {
                 script {
                     sh 'printenv'
                     
-                    if (params.COMMIT_HASH) {
+                    if (params.COMMIT) {
                         checkout([$class: 'GitSCM', 
-                                  branches: [[name: "${params.COMMIT_HASH}"]],
+                                  branches: [[name: "${params.COMMIT}"]],
                                   userRemoteConfigs: [[url: "${GIT_URL}"]]])
                     } else {
                         // Checkout padrão da branch principal se nenhuma tag for especificada
