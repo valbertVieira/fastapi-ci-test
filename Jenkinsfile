@@ -23,17 +23,21 @@ pipeline {
         }
         stage('Check Health') {
             steps {
+                // Aguarda alguns segundos para o serviço iniciar
+                sh 'sleep 10'
+        
                 // Adicione uma checagem na URL da API para garantir que está online
                 script {
-                    def apiStatus = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://${REMOTE_CONTAINER_IP}:${API_PORT}", returnStdout: true).trim()
+                    def apiStatus = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://${REMOTE_CONTAINER_IP}:5050", returnStdout: true).trim()
                     if (apiStatus != '200') {
                         error "A API não está respondendo corretamente. Status: ${apiStatus}"
                     } else {
                         echo "A API está online e respondendo corretamente."
                     }
                 }
-            }
         }
+}
+
 
         
     }
