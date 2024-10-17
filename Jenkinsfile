@@ -4,13 +4,11 @@ pipeline {
         
     
     stages {
-        stage('Preparação') {
+        stage('Preparing environment') {
             steps {
                 script {
                     // Limpa o workspace antes de começar
                     cleanWs()
-                    // Checkout do código (assumindo que você está usando Git)
-                    checkout scm
                 }
             } 
         }
