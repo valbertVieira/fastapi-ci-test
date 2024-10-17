@@ -66,7 +66,7 @@ pipeline {
        failure {
             script {
                 echo "Pipeline falhou. Iniciando processo de rollback..."
-
+            }
         }
         always {
             // Limpeza ou ações pós-build, se necessário
