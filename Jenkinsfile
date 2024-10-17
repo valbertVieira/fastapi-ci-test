@@ -13,7 +13,7 @@ pipeline {
                     if (params.BUILD_TAG) {
                         checkout([$class: 'GitSCM', 
                                   branches: [[name: "refs/tags/${params.BUILD_TAG}"]],
-                                  userRemoteConfigs: [[url: 'git@github.com:valbertVieira/fastapi-ci-test.git']]])
+                                  userRemoteConfigs: [[url: '${GIT_URL}']]])
                     } else {
                         // Checkout padrão da branch principal se nenhuma tag for especificada
                         checkout scm
