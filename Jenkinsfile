@@ -9,13 +9,6 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    if (params.ROLLBACK_COMMIT) {
-                        echo "Iniciando rollback para o commit: ${params.ROLLBACK_COMMIT}"
-                        checkout scm
-                        sh "git checkout ${params.ROLLBACK_COMMIT}"
-                    } else {
-                        checkout scm
-                    }
                     def commitSha = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
                     currentBuild.description = "${commitSha}"
                     echo "Build iniciada para o commit: ${commitSha}"
@@ -74,43 +67,6 @@ pipeline {
             script {
                 echo "Pipeline falhou. Iniciando processo de rollback..."
 
-                def lastSuccessfulBuild = currentBuild.previousBuild
-                while (lastSuccessfulBuild != null && lastSuccessfulBuild.result != 'SUCCESS') {
-                    lastSuccessfulBuild = lastSuccessfulBuild.previousBuild
-                }
-
-                if (lastSuccessfulBuild) {
-                    echo "Última build bem-sucedida: #${lastSuccessfulBuild.number}"
-                    
-                    def lastSuccessfulCommit = lastSuccessfulBuild.description
-                    
-                    if (lastSuccessfulCommit) {
-                        echo "Última versão estável: Build ${lastSuccessfulBuild.number}, Commit ${lastSuccessfulCommit}"
-                        echo "Iniciando rollback para o commit ${lastSuccessfulCommit} da build ${lastSuccessfulBuild.number}"
-
-                        // Executa o rollback
-                        def rollbackBuild = build(
-                            job: currentBuild.projectName,
-                            parameters: [
-                                string(name: 'ROLLBACK_COMMIT', value: lastSuccessfulCommit),
-                                string(name: 'REMOTE_CONTAINER_IP', value: env.REMOTE_CONTAINER_IP)
-                            ],
-                            wait: true,  // Aguarda a conclusão do rollback
-                            propagate: false  // Não propaga o resultado para esta build
-                        )
-
-                        if (rollbackBuild.result == 'SUCCESS') {
-                            echo "Rollback concluído com sucesso."
-                        } else {
-                            echo "Rollback falhou. Resultado: ${rollbackBuild.result}"
-                        }
-                    } else {
-                        echo "Não foi possível obter o commit SHA da última build bem-sucedida. A descrição da build está vazia."
-                    }
-                } else {
-                    echo "Não foi possível encontrar uma build anterior bem-sucedida para rollback."
-                }
-            }
         }
         always {
             // Limpeza ou ações pós-build, se necessário
