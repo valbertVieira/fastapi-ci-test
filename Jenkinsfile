@@ -1,7 +1,9 @@
 pipeline {
     agent any
 
-     stages {
+        
+    
+    stages {
         stage('Preparação') {
             steps {
                 script {
@@ -10,10 +12,9 @@ pipeline {
                     // Checkout do código (assumindo que você está usando Git)
                     checkout scm
                 }
-            }
-    }}
-    
-    stages {
+            } 
+        }
+
         stage('Generate Environment File') {
             steps {
                 // Adicione permissões ao script se necessário
