@@ -79,7 +79,8 @@ pipeline {
                     // Chama a própria job com os parâmetros para o rollback
                     build job: currentBuild.projectName, parameters: [
                         string(name: 'REMOTE_CONTAINER_IP', value: REMOTE_CONTAINER_IP),
-                        string(name: 'ROLLBACK_COMMIT', value: commitSHA)
+                        string(name: 'ROLLBACK_COMMIT', value: commitSHA),
+                        string(name: 'ROLLBACK_TO', value: lastSuccessfulBuild.number.toString())
                     ]
                 } else {
                     echo "Não foi possível encontrar uma build anterior bem-sucedida para rollback."
