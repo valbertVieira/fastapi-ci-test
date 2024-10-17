@@ -72,10 +72,7 @@ pipeline {
                 }
         
                 if (lastSuccessfulBuild) {
-                    def commitSHA = sh(
-                        script: "git rev-list -n 1 ${lastSuccessfulBuild.getEnvironment(listener).get('GIT_COMMIT')}",
-                        returnStdout: true
-                    ).trim()
+                    def commitSHA = lastSuccessfulBuild.getActions(hudson.plugins.git.util.BuildData.class)[0].getLastBuiltRevision().getSha1String()
                     
                     echo "Última versão estável: Build ${lastSuccessfulBuild.number}, Commit ${commitSHA}"
                     echo "Iniciando rollback para o commit ${commitSHA} da build ${lastSuccessfulBuild.number}"
