@@ -72,7 +72,13 @@ pipeline {
         
                 if (lastSuccessfulBuild) {
                     echo "ultima build ok ${lastSuccessfulBuild.number}"
-                    echo "ultima build ok ${lastSuccessfulBuild} ${lastSuccessfulBuild.getEnvironment().get('GIT_COMMIT')}"
+                    node {
+                        def buildData = lastSuccessfulBuild.rawBuild.actions.find { it instanceof hudson.plugins.git.util.BuildData }
+                        if (buildData) {
+                            lastSuccessfulCommit = buildData.lastBuiltRevision.SHA1
+                            echo "${buildData} ok"
+                        }
+                    }
 
                     def commitSHA = lastSuccessfulBuild.getActions(hudson.plugins.git.util.BuildData.class)[0].getLastBuiltRevision().getSha1String()
                     
