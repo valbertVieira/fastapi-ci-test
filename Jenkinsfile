@@ -54,7 +54,7 @@ pipeline {
                     if (apiStatus >= '200' && apiStatus <= '204') {
                         echo "Servico atualizado e funcionando. STATUS: ${apiStatus}"
                     } else {
-                        echo "Api sem resposta. STATUS: ${apiStatus}"
+                        echo "AVISO: API sem resposta. STATUS: ${apiStatus}"
 
                         def lastSuccessfulCommit = env.GIT_PREVIOUS_SUCCESSFUL_COMMIT
                         if (lastSuccessfulCommit) {
@@ -65,6 +65,8 @@ pipeline {
                         } else {
                             echo "Commit bem sucedido nao encontrado, faca rollback manualmente passando o commit estavel na proxima build"
                         }
+                        
+                        error "Falha no Check Health. Pipeline interrompido."
 
 
                         
