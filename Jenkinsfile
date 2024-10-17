@@ -68,6 +68,7 @@ pipeline {
                 def lastSuccessfulBuild = currentBuild.previousBuild
                 while (lastSuccessfulBuild != null && lastSuccessfulBuild.result != 'SUCCESS') {
                     lastSuccessfulBuild = lastSuccessfulBuild.previousBuild
+                    echo "checando ultima ok"
                 }
         
                 if (lastSuccessfulBuild) {
