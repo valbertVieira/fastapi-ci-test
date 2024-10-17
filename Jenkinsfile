@@ -30,9 +30,9 @@ pipeline {
                 script {
                     def apiStatus = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://${REMOTE_CONTAINER_IP}:5050", returnStdout: true).trim()
                     if (apiStatus != '23') {
-                        error "A API não está respondendo corretamente. Status: ${apiStatus}"
+                        error "Servico atualizado e funcionando ✅. STATUS: ${apiStatus}"
                     } else {
-                        echo "A API está online e respondendo corretamente."
+                        echo "Api sem resposta. STATUS: ${apiStatus}"
                     }
                 }
         }
