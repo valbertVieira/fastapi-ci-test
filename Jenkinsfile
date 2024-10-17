@@ -9,6 +9,7 @@ pipeline {
                 script {
                     // Limpa o workspace antes de começar
                     // cleanWs()
+                    sh 'ls'
                 }
             } 
         }
