@@ -1,5 +1,17 @@
 pipeline {
     agent any
+
+     stages {
+        stage('Preparação') {
+            steps {
+                script {
+                    // Limpa o workspace antes de começar
+                    cleanWs()
+                    // Checkout do código (assumindo que você está usando Git)
+                    checkout scm
+                }
+            }
+    }
     
     stages {
         stage('Generate Environment File') {
