@@ -63,25 +63,30 @@ pipeline {
        
        failure {
             script {
-                echo "Pipeline falhou. Iniciando rollback..."
+                echo "Pipeline falhou. Iniciando processo de rollback..."
         
                 def lastSuccessfulBuild = currentBuild.previousBuild
                 while (lastSuccessfulBuild != null && lastSuccessfulBuild.result != 'SUCCESS') {
                     lastSuccessfulBuild = lastSuccessfulBuild.previousBuild
-                    echo "checando ultima ok"
+                    echo "Procurando última build bem-sucedida..."
                 }
         
                 if (lastSuccessfulBuild) {
-                    def commitSHA = lastSuccessfulBuild.rawBuild.getEnvironment(listener).get('GIT_COMMIT')
-                    echo "ultima versao estavel ${lastSuccessfulBuild} commit ${commitSHA}"
-
-                    echo "Revertendo para o commit ${commitSHA} da build ${lastSuccessfulBuild.number}"
+                    def commitSHA = sh(
+                        script: "git rev-parse ${lastSuccessfulBuild.number}^{commit}",
+                        returnStdout: true
+                    ).trim()
+                    
+                    echo "Última versão estável: Build ${lastSuccessfulBuild.number}, Commit ${commitSHA}"
+                    echo "Iniciando rollback para o commit ${commitSHA} da build ${lastSuccessfulBuild.number}"
         
-                    // Chama a própria job com os parâmetros para o rollback
+                    // Executa o rollback
                     build job: currentBuild.projectName, parameters: [
-                        string(name: 'REMOTE_CONTAINER_IP', value: REMOTE_CONTAINER_IP),
-                        string(name: 'ROLLBACK_COMMIT', value: commitSHA),
-                    ]
+                        string(name: 'REMOTE_CONTAINER_IP', value: env.REMOTE_CONTAINER_IP),
+                        string(name: 'ROLLBACK_COMMIT', value: commitSHA)
+                    ], wait: false
+                    
+                    echo "Processo de rollback iniciado. Verifique a nova build para acompanhar o progresso."
                 } else {
                     echo "Não foi possível encontrar uma build anterior bem-sucedida para rollback."
                 }
