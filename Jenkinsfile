@@ -59,6 +59,7 @@ pipeline {
         always {
             // Limpeza ou ações pós-build, se necessário
             echo "Pipeline concluído, executando ações pós-build."
+             cleanWs()
         }
     }
 }
