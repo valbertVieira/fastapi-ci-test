@@ -10,7 +10,7 @@ pipeline {
                     // Atualiza o SHA do commit atual na descrição da build
                     
                     
-                    echo "Build iniciada para o commit: ${commitSha}"
+                    
                     def commitSha = currentBuild.description ?: 'main' // Se a descrição não tiver o SHA, usa a branch principal
                     
                     // Fazer o checkout do commit especificado na descrição da build anterior
